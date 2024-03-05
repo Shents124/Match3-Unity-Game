@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -35,9 +34,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private eLevelMode m_eLevelMode;
 
     private GameSettings m_gameSettings;
-
 
     private BoardController m_boardController;
 
@@ -99,7 +98,13 @@ public class GameManager : MonoBehaviour
 
         m_levelCondition.ConditionCompleteEvent += GameOver;
 
+        m_eLevelMode = mode;
         State = eStateGame.GAME_STARTED;
+    }
+
+    public void RestartLevel()
+    {
+        LoadLevel(m_eLevelMode);
     }
 
     public void GameOver()
