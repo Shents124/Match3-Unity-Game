@@ -53,6 +53,11 @@ public class NormalItem : Item
         return prefabname;
     }
 
+    protected override Sprite GetSprite()
+    {
+        return LoadResourceService.LoadFishSprite(ItemType);
+    }
+
     internal override bool IsSameType(Item other)
     {
         NormalItem it = other as NormalItem;

@@ -19,6 +19,9 @@ public class Item
         if (!string.IsNullOrEmpty(prefabname))
         {
             GameObject prefab = Resources.Load<GameObject>(prefabname);
+            var spriteRenderer = prefab.GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = GetSprite();
+
             if (prefab)
             {
                 View = GameObject.Instantiate(prefab).transform;
@@ -27,6 +30,8 @@ public class Item
     }
 
     protected virtual string GetPrefabName() { return string.Empty; }
+
+    protected virtual Sprite GetSprite() { return null; }
 
     public virtual void SetCell(Cell cell)
     {

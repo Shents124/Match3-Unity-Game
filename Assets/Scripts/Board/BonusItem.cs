@@ -41,6 +41,11 @@ public class BonusItem : Item
         return prefabname;
     }
 
+    protected override Sprite GetSprite()
+    {
+        return LoadResourceService.LoadBonusItemSprite(ItemType);
+    }
+
     internal override bool IsSameType(Item other)
     {
         BonusItem it = other as BonusItem;
