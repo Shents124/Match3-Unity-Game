@@ -24,4 +24,20 @@ public class Utils
 
         return result;
     }
+
+    public static NormalItem.eNormalType GetNormalTypeLeastAmountExcept(Dictionary<NormalItem.eNormalType, int> normalTypeCount, HashSet<NormalItem.eNormalType> types)
+    {
+        var normalTypeCountExcept = new Dictionary<NormalItem.eNormalType, int>();
+
+
+        foreach (var entry in normalTypeCount)
+        {
+            if (types.Contains(entry.Key))
+                continue;
+
+            normalTypeCountExcept.Add(entry.Key, entry.Value);
+        }
+
+        return normalTypeCountExcept.OrderBy(x => x.Value).FirstOrDefault().Key;
+    }
 }
