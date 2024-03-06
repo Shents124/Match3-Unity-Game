@@ -20,10 +20,13 @@ public class Cell : MonoBehaviour
 
     public bool IsEmpty => Item == null;
 
-    public void Setup(int cellX, int cellY)
+    private Action<Item> m_OnCellExplodeItem;
+
+    public void Setup(int cellX, int cellY, Action<Item> onCellExplodeItem)
     {
         this.BoardX = cellX;
         this.BoardY = cellY;
+        m_OnCellExplodeItem = onCellExplodeItem;
     }
 
     public bool IsNeighbour(Cell other)
@@ -72,6 +75,7 @@ public class Cell : MonoBehaviour
     {
         if (Item == null) return;
 
+        m_OnCellExplodeItem?.Invoke(Item);
         Item.ExplodeView();
         Item = null;
     }
