@@ -25,6 +25,8 @@ public class Board
 
     private int m_matchMin;
 
+    private Dictionary<NormalItem.eNormalType, int> m_eNormalTypeCount;
+
     public Board(Transform transform, GameSettings gameSettings)
     {
         m_root = transform;
@@ -35,7 +37,7 @@ public class Board
         this.boardSizeY = gameSettings.BoardSizeY;
 
         m_cells = new Cell[boardSizeX, boardSizeY];
-
+        InitNormalTypeCount();
         CreateBoard();
     }
 
@@ -52,7 +54,7 @@ public class Board
                 go.transform.SetParent(m_root);
 
                 Cell cell = go.GetComponent<Cell>();
-                cell.Setup(x, y);
+                cell.Setup(x, y, OnCellExpleItem);
 
                 m_cells[x, y] = cell;
             }
@@ -70,6 +72,25 @@ public class Board
             }
         }
 
+    }
+
+    private void InitNormalTypeCount()
+    {
+        m_eNormalTypeCount = new Dictionary<NormalItem.eNormalType, int>();
+
+        var list = Enum.GetValues(typeof(NormalItem.eNormalType)).Cast<NormalItem.eNormalType>();
+        foreach (var item in list)
+        {
+            m_eNormalTypeCount[item] = 0;
+        }
+    }
+
+    private void ClearNormalTypeCount()
+    {
+        foreach (var item in m_eNormalTypeCount)
+        {
+            m_eNormalTypeCount[item.Key] = 0;
+        }
     }
 
     internal void Fill()
@@ -100,12 +121,15 @@ public class Board
                     }
                 }
 
-                item.SetType(Utils.GetRandomNormalTypeExcept(types.ToArray()));
+                var eNormalType = Utils.GetRandomNormalTypeExcept(types.ToArray());
+                item.SetType(eNormalType);
                 item.SetView();
                 item.SetViewRoot(m_root);
 
                 cell.Assign(item);
                 cell.ApplyItemPosition(false);
+
+                IncreaseNormalTypeCount(eNormalType);
             }
         }
     }
@@ -135,6 +159,31 @@ public class Board
         }
     }
 
+    private void OnCellExpleItem(Item item)
+    {
+        if (item == null)
+            return;
+
+
+        if (!(item is NormalItem normalItem))
+            return;
+
+        if (m_eNormalTypeCount.ContainsKey(normalItem.ItemType) == false)
+            return;
+
+        m_eNormalTypeCount[normalItem.ItemType]--;
+    }
+
+    private void IncreaseNormalTypeCount(NormalItem.eNormalType type)
+    {
+        if (m_eNormalTypeCount.ContainsKey(type))
+        {
+            m_eNormalTypeCount[type]++;
+            return;
+        }
+            
+        m_eNormalTypeCount[type] = 1;
+    }
 
     internal void FillGapsWithNewItems()
     {
@@ -147,14 +196,45 @@ public class Board
 
                 NormalItem item = new NormalItem();
 
-                item.SetType(Utils.GetRandomNormalType());
+                var eighbourTypes = GetNeighbourTypes(cell);
+
+                var eNormalType = Utils.GetNormalTypeLeastAmountExcept(m_eNormalTypeCount, eighbourTypes);
+
+                item.SetType(eNormalType);
                 item.SetView();
                 item.SetViewRoot(m_root);
 
                 cell.Assign(item);
                 cell.ApplyItemPosition(true);
+
+                IncreaseNormalTypeCount(eNormalType);
             }
         }
+    }
+
+    internal HashSet<NormalItem.eNormalType> GetNeighbourTypes(Cell cell)
+    {
+        var result = new HashSet<NormalItem.eNormalType>();
+        AddNeighbourTypes(result, cell.NeighbourBottom);
+        AddNeighbourTypes(result, cell.NeighbourLeft);
+        AddNeighbourTypes(result, cell.NeighbourRight);
+        AddNeighbourTypes(result, cell.NeighbourUp);
+
+        return result;
+    }
+
+    private void AddNeighbourTypes(HashSet<NormalItem.eNormalType> hashSet, Cell cell)
+    {
+        if (cell == null) 
+            return;
+
+        if (!(cell.Item is NormalItem normalItem))
+            return;
+
+        if (hashSet.Contains(normalItem.ItemType)) 
+            return;
+        
+        hashSet.Add(normalItem.ItemType);
     }
 
     internal void ExplodeAllItems()
