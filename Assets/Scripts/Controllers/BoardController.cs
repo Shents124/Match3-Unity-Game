@@ -46,6 +46,19 @@ public class BoardController : MonoBehaviour
         Fill();
     }
 
+    public void ReloadBoard()
+    {
+        ResetRayCast();
+        IsBusy = false;
+        m_hintIsShown = false;
+        m_gameOver = false;
+        m_timeAfterFill = 0;
+
+        m_potentialMatch.Clear();
+        m_board.ReloadBoard();
+        FindMatchesAndCollapse();
+    }
+
     private void Fill()
     {
         m_board.Fill();

@@ -14,16 +14,19 @@ public class LevelCondition : MonoBehaviour
 
     public virtual void Setup(float value, Text txt)
     {
+        m_conditionCompleted = false;
         m_txt = txt;
     }
 
     public virtual void Setup(float value, Text txt, GameManager mngr)
     {
+        m_conditionCompleted = false;
         m_txt = txt;
     }
 
     public virtual void Setup(float value, Text txt, BoardController board)
     {
+        m_conditionCompleted = false;
         m_txt = txt;
     }
 
@@ -33,11 +36,17 @@ public class LevelCondition : MonoBehaviour
     {
         m_conditionCompleted = true;
 
-        ConditionCompleteEvent();
+        ConditionCompleteEvent?.Invoke();
     }
 
     protected virtual void OnDestroy()
     {
 
+    }
+
+    public virtual void Clear()
+    {
+        m_conditionCompleted = true;
+        ConditionCompleteEvent = null;
     }
 }

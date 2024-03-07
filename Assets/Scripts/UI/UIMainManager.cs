@@ -23,7 +23,6 @@ public class UIMainManager : MonoBehaviour
 
     internal void ShowMainMenu()
     {
-        m_gameManager.ClearLevel();
         m_gameManager.SetState(GameManager.eStateGame.MAIN_MENU);
     }
 
@@ -118,7 +117,6 @@ public class UIMainManager : MonoBehaviour
 
     internal void RestartLevel()
     {
-        m_gameManager.ClearLevel();
         m_gameManager.RestartLevel();
     }
 }

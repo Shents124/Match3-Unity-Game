@@ -83,17 +83,42 @@ public class GameManager : MonoBehaviour
 
     public void LoadLevel(eLevelMode mode)
     {
-        m_boardController = new GameObject("BoardController").AddComponent<BoardController>();
-        m_boardController.StartGame(this, m_gameSettings);
+        if (m_boardController == null)
+        {
+            m_boardController = new GameObject("BoardController").AddComponent<BoardController>();
+            m_boardController.StartGame(this, m_gameSettings);
+        }
+        else
+        {
+            m_boardController.ReloadBoard();
+        }
 
         if (mode == eLevelMode.MOVES)
         {
-            m_levelCondition = this.gameObject.AddComponent<LevelMoves>();
+            if (this.gameObject.TryGetComponent<LevelMoves>(out var levelMovesComponent))
+            {
+                levelMovesComponent.Clear();
+                m_levelCondition = levelMovesComponent;
+            }
+            else
+            {
+                m_levelCondition = this.gameObject.AddComponent<LevelMoves>();
+            }
+            
             m_levelCondition.Setup(m_gameSettings.LevelMoves, m_uiMenu.GetLevelConditionView(), m_boardController);
         }
         else if (mode == eLevelMode.TIMER)
         {
-            m_levelCondition = this.gameObject.AddComponent<LevelTime>();
+            if (this.gameObject.TryGetComponent<LevelTime>(out var levelTimeComponent))
+            {
+                levelTimeComponent.Clear();
+                m_levelCondition = levelTimeComponent;
+            }
+            else
+            {
+                m_levelCondition = this.gameObject.AddComponent<LevelTime>();
+            }
+            
             m_levelCondition.Setup(m_gameSettings.LevelMoves, m_uiMenu.GetLevelConditionView(), this);
         }
 

@@ -107,6 +107,7 @@ public class Item
             View.DOScale(0.1f, 0.1f).OnComplete(
                 () =>
                 {
+                    StopAnimateForHint();
                     View.localScale = originScale;
                     PoolDictionary.ReturnGameObject(View.gameObject);
                     View = null;
@@ -139,6 +140,7 @@ public class Item
 
         if (View)
         {
+            StopAnimateForHint();
             PoolDictionary.ReturnGameObject(View.gameObject);
             View = null;
         }

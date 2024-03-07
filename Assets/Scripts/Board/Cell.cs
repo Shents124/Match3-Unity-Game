@@ -35,7 +35,6 @@ public class Cell : MonoBehaviour
             BoardY == other.BoardY && Mathf.Abs(BoardX - other.BoardX) == 1;
     }
 
-
     public void Free()
     {
         Item = null;
@@ -61,7 +60,8 @@ public class Cell : MonoBehaviour
     {
         if (Item != null)
         {
-            Item.Clear();
+            m_OnCellExplodeItem?.Invoke(Item);
+            Item.Clear();     
             Item = null;
         }
     }

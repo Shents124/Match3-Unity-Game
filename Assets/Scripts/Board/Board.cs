@@ -31,6 +31,7 @@ public class Board
     {
         m_root = transform;
 
+
         m_matchMin = gameSettings.MatchesMin;
 
         this.boardSizeX = gameSettings.BoardSizeX;
@@ -72,6 +73,12 @@ public class Board
             }
         }
 
+    }
+
+    public void ReloadBoard()
+    {
+        Clear();
+        Fill();
     }
 
     private void InitNormalTypeCount()
@@ -748,9 +755,6 @@ public class Board
             {
                 Cell cell = m_cells[x, y];
                 cell.Clear();
-
-                GameObject.Destroy(cell.gameObject);
-                m_cells[x, y] = null;
             }
         }
     }

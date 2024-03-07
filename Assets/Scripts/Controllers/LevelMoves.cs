@@ -48,4 +48,10 @@ public class LevelMoves : LevelCondition
 
         base.OnDestroy();
     }
+
+    public override void Clear()
+    {
+        if (m_board != null) m_board.OnMoveEvent -= OnMove;
+        base.Clear();
+    }
 }
