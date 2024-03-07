@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
@@ -18,13 +16,15 @@ public class Item
 
         if (!string.IsNullOrEmpty(prefabname))
         {
-            GameObject prefab = Resources.Load<GameObject>(prefabname);
-            var spriteRenderer = prefab.GetComponent<SpriteRenderer>();
+            GameObject viewObject = PoolDictionary.GetGameObject(prefabname);
+
+            var spriteRenderer = viewObject.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = GetSprite();
 
-            if (prefab)
+
+            if (viewObject)
             {
-                View = GameObject.Instantiate(prefab).transform;
+                View = viewObject.transform;
             }
         }
     }
@@ -57,7 +57,7 @@ public class Item
     {
         if (View)
         {
-            View.SetParent(root);
+            //View.SetParent(root);
         }
     }
 
@@ -103,10 +103,12 @@ public class Item
     {
         if (View)
         {
+            var originScale = View.localScale;
             View.DOScale(0.1f, 0.1f).OnComplete(
                 () =>
                 {
-                    GameObject.Destroy(View.gameObject);
+                    View.localScale = originScale;
+                    PoolDictionary.ReturnGameObject(View.gameObject);
                     View = null;
                 }
                 );
@@ -137,7 +139,7 @@ public class Item
 
         if (View)
         {
-            GameObject.Destroy(View.gameObject);
+            PoolDictionary.ReturnGameObject(View.gameObject);
             View = null;
         }
     }
